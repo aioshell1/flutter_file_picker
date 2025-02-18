@@ -141,7 +141,7 @@ class FilePickerIO extends FilePicker {
       List<String>? allowedExtensions,
       Uint8List? bytes,
       bool lockParentWindow = false}) {
-    if (Platform.isIOS || Platform.isAndroid) {
+    if (Platform.isIOS || Platform.isAndroid || Platform.isOhos) {
       return _channel.invokeMethod("save", {
         "fileName": fileName,
         "fileType": type.name,

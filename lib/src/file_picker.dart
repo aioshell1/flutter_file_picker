@@ -48,7 +48,7 @@ abstract class FilePicker extends PlatformInterface {
   }
 
   factory FilePicker._setPlatform() {
-    if (Platform.isAndroid || Platform.isIOS) {
+    if (Platform.isAndroid || Platform.isIOS || Platform.isOhos) {
       return FilePickerIO();
     } else if (Platform.isLinux) {
       return FilePickerLinux();

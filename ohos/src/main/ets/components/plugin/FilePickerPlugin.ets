@@ -19,10 +19,12 @@ import {
   MethodCall,
   MethodCallHandler,
   MethodChannel,
+  EventChannel,
   MethodResult,
   AbilityPluginBinding,
   BinaryMessenger,
 } from '@ohos/flutter_ohos';
+import { EventSink } from '@ohos/flutter_ohos/src/main/ets/plugin/common/EventChannel';
 import { UIAbility } from '@kit.AbilityKit';
 import { FilePickerDelegate } from './FilePlckerDelegate'
 import List from '@ohos.util.List'
@@ -117,5 +119,20 @@ export default class FilePickerPlugin implements FlutterPlugin, MethodCallHandle
     this.delegate = new FilePickerDelegate(ability);
     this.channel = new MethodChannel(messenger, CHANNEL);
     this.channel.setMethodCallHandler(this);
+    const eventChannel = new EventChannel(messenger, EVENT_CHANNEL);
+    eventChannel?.setStreamHandler({
+      onListen: (args: Object, events: EventSink) => {
+        // 当 Flutter 侧开始监听时，将 events 传递给 delegate
+        if (this.delegate) {
+          this.delegate.setEventHandler(events);
+        }
+      },
+      onCancel: (args: Object) => {
+        // 当 Flutter 侧取消监听时，清空 delegate 内的事件处理器
+        if (this.delegate) {
+          this.delegate.setEventHandler(null);
+        }
+      }
+    });
   }
 }
